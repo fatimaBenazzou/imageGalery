@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class GalleryScreen extends StatelessWidget {
-  const GalleryScreen({super.key});
+  final List<String> images = List.generate(9, (index) => 'images/image$index.jpg');
+
+  GalleryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -9,21 +11,20 @@ class GalleryScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Galerie d\'images'),
       ),
-      body: 
-      GridView.builder(
+      body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           mainAxisSpacing: 4.0,
           crossAxisSpacing: 4.0,
         ),
-        itemCount: 5, // Remplacez ceci par le nombre d'images que vous avez
+        itemCount: images.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () {
               _showImagePopup(context, index);
             },
             child: Image.asset(
-              'images/image$index.jpg',
+              images[index],
               fit: BoxFit.cover,
             ),
           );
@@ -32,47 +33,49 @@ class GalleryScreen extends StatelessWidget {
     );
   }
 
- void _showImagePopup(BuildContext context, int index) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      int currentImageIndex = index;
-
-      void goToNextImage() {
-        if (currentImageIndex < 4) {
-          Navigator.of(context).pop();
-          _showImagePopup(context, currentImageIndex + 1);
+  void _showImagePopup(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        void goToNextImage() {
+          if (index < images.length - 1) {
+            Navigator.of(context).pop();
+            _showImagePopup(context, index + 1);
+          }
         }
-      }
 
-      void goToPreviousImage() {
-        if (currentImageIndex > 0) {
-          Navigator.of(context).pop();
-          _showImagePopup(context, currentImageIndex - 1);
+        void goToPreviousImage() {
+          if (index > 0) {
+            Navigator.of(context).pop();
+            _showImagePopup(context, index - 1);
+          }
         }
-      }
 
-      return Dialog(
+        return Dialog(
         child: SizedBox(
           width: double.infinity,
-          height: double.infinity,
-          child: Column(
+          height: MediaQuery.of(context).size.height * 0.8,
+          child: Stack(
+            fit: StackFit.expand,
             children: [
               Expanded(
-                child: Image.asset(
-                  'images/image$currentImageIndex.jpg',
-                  fit: BoxFit.contain,
-                ),
+               child: Image.asset(
+                    images[index],
+                    fit: BoxFit.contain,
+                  ),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  IconButton(
+                  IconButton.outlined(
                     icon: const Icon(Icons.arrow_back),
+                    color: Colors.white,
                     onPressed: goToPreviousImage,
                   ),
-                  IconButton(
+                  IconButton.outlined(
                     icon: const Icon(Icons.arrow_forward),
+                    color: Colors.white,
                     onPressed: goToNextImage,
                   ),
                 ],
@@ -81,8 +84,7 @@ class GalleryScreen extends StatelessWidget {
           ),
         ),
       );
-    },
-  );
-}
-
+      }
+    );
+  }
 }

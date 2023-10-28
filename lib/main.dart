@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import './Screens/gallery_screen.dart'; // Importez le widget correctement
-
+import './Screens/gallery_screen.dart'; 
 void main() {
   runApp(const MyApp());
 }
@@ -13,9 +12,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.lightBlue,
-      ),
-      home: const GalleryScreen(), 
+          // primaryColor: Colors.purple,
+          colorSchemeSeed: Colors.white,
+          useMaterial3: true),
+      home: GalleryScreen(),
     );
   }
 }
